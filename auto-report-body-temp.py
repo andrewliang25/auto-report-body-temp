@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-Spyder Editor
+Auto Report Body Temperature
 
-This is a temporary script file.
+Since COVID-19 pandemic, my company requested employees to report body temperature 3 times per day through Microsoft Forms.
+So I wrote a script to fill in forms and submit automatically on scheduled days and time with Python and Selenium.
 """
 
 from selenium import webdriver
@@ -12,18 +13,19 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
-from webdriver_manager.utils import ChromeType
+# from webdriver_manager.utils import ChromeType
 import time
 import random
 import schedule
 import datetime
+import getpass
 
 
-def schedule_auto_report_body_temp():
+def schedule_auto_report_body_temp(account, password):
     
-    schedule.every().day.at("09:00").do(report_body_temp_on_weekdays, "早上")
-    schedule.every().day.at("12:00").do(report_body_temp_on_weekdays, "中午")
-    schedule.every().day.at("18:00").do(report_body_temp_on_weekdays, "下午")
+    schedule.every().day.at("09:00").do(report_body_temp_on_weekdays, "早上", account, password)
+    schedule.every().day.at("12:00").do(report_body_temp_on_weekdays, "中午", account, password)
+    schedule.every().day.at("18:00").do(report_body_temp_on_weekdays, "下午", account, password)
     
     # Checks whether a scheduled task is pending to run or not
     while True:
@@ -33,7 +35,7 @@ def schedule_auto_report_body_temp():
     return
 
 
-def report_body_temp_on_weekdays(time_period_string):
+def report_body_temp_on_weekdays(time_period_string, account, password):
     print("Task start at " + datetime.datetime.now().strftime("%H:%M:%S") + ".")
     
     if datetime.datetime.today().isoweekday() > 5:
@@ -44,23 +46,23 @@ def report_body_temp_on_weekdays(time_period_string):
     print("Will start reporting at " + (datetime.datetime.now() + datetime.timedelta(seconds=sleep_time)).strftime("%H:%M:%S") + ".")
     time.sleep(sleep_time)
     
-    report_body_temp(time_period_string, get_body_temp())
+    report_body_temp(time_period_string, get_body_temp(), account, password)
 
 
 def get_body_temp():
     return round(random.uniform(35.7, 36.5), 1)
 
 
-def report_body_temp(time_period_string, body_temp):
+def report_body_temp(time_period_string, body_temp, account, password):
     print("Start reporting at " + datetime.datetime.now().strftime("%H:%M:%S") + ".")
     
-    body_temp_report_form_url = "https://forms.url/"
+    body_temp_report_form_url = "https://forms.office.com/pages/responsepage.aspx?id=pSz4zODECk-s8yyNA5auoPhR9A61DCRFqLLx7a3usHZURE44T1dHVUFMWk1CRVc5WEVXVFExM0QyMi4u"
     fill_report_body_temp_action_list = [
     # enter account
-    {'type': 'write', 'xpath': '//*[@id="i0116"]', 'text': 'my@Account'},
+    {'type': 'write', 'xpath': '//*[@id="i0116"]', 'text': account},
     {'type': 'click', 'xpath': '//*[@id="idSIButton9"]', 'text': ''},
     # enter password and login
-    {'type': 'write', 'xpath': '//*[@id="i0118"]', 'text': 'myPassword'},
+    {'type': 'write', 'xpath': '//*[@id="i0118"]', 'text': password},
     {'type': 'click', 'xpath': '//*[@id="idSIButton9"]', 'text': ''},
     # click not to keep logged in
     {'type': 'click', 'xpath': '//*[@id="idBtn_Back"]', 'text': ''},
@@ -121,6 +123,13 @@ def selenium_chrome_robot(input_url, input_action_list, headless_mode=False):
     return
 
 
+def main():
+    print("Auto Report Body Temperature \n" \
+          "report at 9, 12, 18 on weekdays")
+    account = input("Enter Account: ")
+    password = getpass.getpass("Enter Password: ")
+    schedule_auto_report_body_temp(account, password)
 
-# Start schedule
-schedule_auto_report_body_temp()
+
+if __name__ == "__main__":
+    main()

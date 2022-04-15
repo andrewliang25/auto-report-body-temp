@@ -73,11 +73,11 @@ def report_body_temp(time_period_string, body_temp, account, password):
     # choose not feeling bad
     {'type': 'click', 'xpath': '//*[@id="form-container"]//input[@value="1.無"]', 'text': ''},
     # check send email receipt
-    {'type': 'click', 'xpath': '//*[@id="form-container"]/div/div/div[1]/div/div[1]/div[2]/div[3]/div/div/label/input', 'text': ''},
+    {'type': 'click', 'xpath': '//*[@id="form-container"]//div[@class = "office-form-email-receipt-checkbox"]//input', 'text': ''},
     # submit
     {'type': 'click', 'xpath': '//*[@id="form-container"]//button[@title="提交"]', 'text': ''},
     # wait finish
-    {'type': 'wait', 'xpath': '//*[@id="form-container"]/div/div/div[1]/div/div[2]/div[1]/div[2]/span', 'text': ''}]
+    {'type': 'wait', 'xpath': '//*[@id="form-container"]//span[@class="thank-you-page-comfirm-text"]', 'text': ''}]
 
     selenium_chrome_robot(body_temp_report_form_url, fill_report_body_temp_action_list, headless_mode=True)
     

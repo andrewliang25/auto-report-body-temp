@@ -19,18 +19,18 @@ import random
 import schedule
 import datetime
 import getpass
-from loader import Loader
+
 
 def schedule_auto_report_body_temp(account, password):
+    
     schedule.every().day.at("09:00").do(report_body_temp_on_weekdays, "早上", account, password)
     schedule.every().day.at("12:00").do(report_body_temp_on_weekdays, "中午", account, password)
     schedule.every().day.at("18:00").do(report_body_temp_on_weekdays, "下午", account, password)
     
     # Checks whether a scheduled task is pending to run or not
-    with Loader("Schedule Pending..."):
-        while True:
-            schedule.run_pending()
-            time.sleep(1)
+    while True:
+        schedule.run_pending()
+        time.sleep(1)
         
     return
 

@@ -18,7 +18,7 @@ import time
 import random
 import schedule
 import datetime
-import getpass
+import pwinput
 
 
 def schedule_auto_report_body_temp(account, password):
@@ -27,6 +27,7 @@ def schedule_auto_report_body_temp(account, password):
     schedule.every().day.at("12:00").do(report_body_temp_on_weekdays, "中午", account, password)
     schedule.every().day.at("18:00").do(report_body_temp_on_weekdays, "下午", account, password)
     
+    print("Start Schedule")
     # Checks whether a scheduled task is pending to run or not
     while True:
         schedule.run_pending()
@@ -127,7 +128,7 @@ def main():
     print("Auto Report Body Temperature \n" \
           "report at 9, 12, 18 on weekdays")
     account = input("Enter Account: ")
-    password = getpass.getpass("Enter Password: ")
+    password = pwinput.pwinput()
     schedule_auto_report_body_temp(account, password)
 
 
